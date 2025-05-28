@@ -95,7 +95,7 @@ export default {
   mounted() {
     axios.get('http://127.0.0.1:8000/api/purchases')
       .then(response => {
-        this.purchases = response.data.purchases
+        this.purchases = response.data
       })
       .catch(() => {
         Swal.fire('Error', 'No se pudo cargar la lista de compras.', 'error')
