@@ -15,8 +15,8 @@
       <tbody>
         <tr v-for="cliente in clientes" :key="cliente.id">
           <td>{{ cliente.id }}</td>
-          <td>{{ cliente.direccion }}</td>
-          <td>{{ cliente.telefono }}</td>
+          <td>{{ cliente.address }}</td>
+          <td>{{ cliente.phone }}</td>
           <td>
             <button class="btn btn-danger me-2" @click="eliminarCliente(cliente.id)">Eliminar</button>
             <router-link :to="`/editar-cliente/${cliente.id}`" class="btn btn-warning">Editar</router-link>
