@@ -66,8 +66,10 @@ export default {
           axios.delete(`http://127.0.0.1:8000/api/raw-materials/${id}`)
             .then(response => {
               if (response.data.success) {
-                Swal.fire('¡Eliminado!', '', 'success')
-                this.rawMaterials = response.data.raw_materials
+                Swal.fire('¡Eliminado!', '', 'success');
+                this.fetchRawMaterials(); // Volver a cargar la lista
+              } else {
+                Swal.fire('Error', 'No se pudo eliminar.', 'error');
               }
             })
             .catch(() => {
@@ -75,16 +77,19 @@ export default {
             })
         }
       })
+    },
+    fetchRawMaterials() {
+      axios.get('http://127.0.0.1:8000/api/raw-materials')
+        .then(response => {
+          this.rawMaterials = response.data; // Asignar directamente response.data
+        })
+        .catch(() => {
+          Swal.fire('Error', 'No se pudo cargar la lista.', 'error')
+        })
     }
   },
   mounted() {
-    axios.get('http://127.0.0.1:8000/api/raw-materials')
-      .then(response => {
-        this.rawMaterials = response.data.raw_materials
-      })
-      .catch(() => {
-        Swal.fire('Error', 'No se pudo cargar la lista.', 'error')
-      })
+    this.fetchRawMaterials(); // Llamar a la función de carga al montar
   }
 }
 </script>
