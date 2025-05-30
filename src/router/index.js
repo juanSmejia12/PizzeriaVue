@@ -16,6 +16,7 @@ import App from '@/views/App.vue'
 import Ingredients from '@/views/Ingredients.vue'
 import NewIngredient from '@/components/Ingredient/NewIngredient.vue'
 import EditIngredient from '@/components/Ingredient/EditIngredient.vue'
+import PizzaIngredients from '@/views/PizzaIngredients.vue'
 
 const routes = [
   {
@@ -99,6 +100,11 @@ const routes = [
     name: 'IngredientsEdit',
     component: EditIngredient,
     props: true
+},
+{
+  path: '/pizza-ingredients',
+  name: 'pizzaIngredients',
+  component: PizzaIngredients
 },
   {
     path: '/about',
