@@ -8,8 +8,10 @@ import Employees from '../views/Employees.vue'
 import Raw_materials from '../views/Raw_materials.vue'
 import Order_extra_ingredients from '@/views/Order_extra_ingredients.vue'
 import Pizza_raw_materials from '@/views/Pizza_raw_materials.vue'
-import Raw_material from '@/views/Raw_material.vue'
 import Branches from '@/views/Branches.vue'
+import Pizzas from '@/views/Pizzas.vue'
+import NewPizza from '@/components/Pizza/NewPizza.vue'
+import EditPizza from '@/components/Pizza/EditPizza.vue'
 import App from '@/views/App.vue'
 
 const routes = [
@@ -59,15 +61,26 @@ const routes = [
     component: Branches
   },
   {
-    path: '/raw_material',
-    name: 'raw_material',
-    component: Raw_material
-  },
-  {
     path: '/order_extra_ingredients',
     name: 'order_extra_ingredients',
     component: Order_extra_ingredients
   },
+  {
+    path: '/pizzas',
+    name: 'pizzas',
+    component: Pizzas
+  },
+  {
+  path: '/pizzas/new',
+  name: 'PizzasNew',
+  component: NewPizza
+},
+{
+  path: '/pizzas/edit/:id',
+  name: 'PizzasEdit',
+  component: EditPizza,
+  props: true
+},
   {
     path: '/about',
     name: 'about',
