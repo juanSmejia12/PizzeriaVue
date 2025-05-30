@@ -1,27 +1,37 @@
 <template>
   <div class="container">
-    <h1>Relación Pizza - Ingrediente</h1>
-    <router-link class="btn btn-success mb-3" :to="{ name: 'PizzaIngredientNew' }">Nueva relación</router-link>
+    <h1 class="text-start">
+      Relación Pizza - Ingrediente
+      <button @click="newPizzaIngredient" class="btn btn-success mx-2">
+        <font-awesome-icon icon="plus" />
+      </button>
+    </h1>
 
-    <table class="table table-bordered">
+    <table class="table table-striped">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>#</th>
           <th>Pizza</th>
           <th>Ingrediente</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="relacion in relaciones" :key="relacion.id">
-          <td>{{ relacion.id }}</td>
-<td>{{ relacion.pizza ? relacion.pizza.name : 'Sin pizza' }}</td>
-<td>{{ relacion.ingredient ? relacion.ingredient.name : 'Sin ingrediente' }}</td>
-
+        <tr v-for="(item, index) in pizzaIngredients" :key="item.id">
+          <th scope="row">{{ index + 1 }}</th>
+          <td>{{ item.pizza?.name || 'No disponible' }}</td>
+          <td>{{ item.ingredient?.name || 'No disponible' }}</td>
           <td>
-            <button class="btn btn-warning btn-sm" @click="editar(relacion.id)">Editar</button>
-            <button class="btn btn-danger btn-sm mx-1" @click="eliminar(relacion.id)">Eliminar</button>
+            <button @click="editPizzaIngredient(item.id)" class="btn btn-warning mx-2">
+              <font-awesome-icon icon="pencil" />
+            </button>
+            <button @click="deletePizzaIngredient(item.id)" class="btn btn-danger mx-2">
+              <font-awesome-icon icon="trash" />
+            </button>
           </td>
+        </tr>
+        <tr v-if="pizzaIngredients.length === 0">
+          <td colspan="4" class="text-center">No hay relaciones registradas.</td>
         </tr>
       </tbody>
     </table>
@@ -36,43 +46,57 @@ export default {
   name: 'PizzaIngredients',
   data() {
     return {
-      relaciones: []
+      pizzaIngredients: []
     }
   },
-  mounted() {
-    this.cargarRelaciones()
-  },
   methods: {
-    cargarRelaciones() {
-      axios.get('http://127.0.0.1:8000/api/pizza-ingredients')
-        .then(response => {
-          this.relaciones = response.data
-        })
+    newPizzaIngredient() {
+      this.$router.push({ name: 'PizzaIngredientNew' })
     },
-    editar(id) {
+    editPizzaIngredient(id) {
       this.$router.push({ name: 'PizzaIngredientEdit', params: { id } })
     },
-    eliminar(id) {
+    deletePizzaIngredient(id) {
       Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'Esta relación será eliminada',
-        icon: 'warning',
+        title: `¿Desea eliminar la relación con ID ${id}?`,
         showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
-      }).then(result => {
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
+        icon: 'warning'
+      }).then((result) => {
         if (result.isConfirmed) {
           axios.delete(`http://127.0.0.1:8000/api/pizza-ingredients/${id}`)
-            .then(() => {
-              Swal.fire('Eliminado', 'Relación eliminada correctamente', 'success')
-              this.cargarRelaciones()
+            .then(response => {
+              if (response.data.success) {
+                Swal.fire('¡Eliminado!', '', 'success')
+                this.pizzaIngredients = response.data.pizza_ingredients
+              } else {
+                Swal.fire('Error', 'No se pudo eliminar.', 'error')
+              }
             })
             .catch(() => {
-              Swal.fire('Error', 'No se pudo eliminar', 'error')
+              Swal.fire('Error', 'No se pudo eliminar.', 'error')
             })
         }
       })
     }
+  },
+  mounted() {
+    axios.get('http://127.0.0.1:8000/api/pizza-ingredients')
+      .then(response => {
+        console.log('Relaciones cargadas:', response.data)
+
+        if (Array.isArray(response.data)) {
+          this.pizzaIngredients = response.data
+        } else if (Array.isArray(response.data.pizza_ingredients)) {
+          this.pizzaIngredients = response.data.pizza_ingredients
+        } else {
+          this.pizzaIngredients = []
+        }
+      })
+      .catch(() => {
+        Swal.fire('Error', 'No se pudo cargar la lista.', 'error')
+      })
   }
 }
 </script>
