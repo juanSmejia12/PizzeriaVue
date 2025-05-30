@@ -1,0 +1,72 @@
+<template>
+  <div class="container">
+    <h2>Nuevo Extra Ingredient</h2>
+    <form @submit.prevent="submitForm">
+      <div class="mb-3">
+        <label for="name" class="form-label">Nombre</label>
+        <input
+          type="text"
+          id="name"
+          v-model="form.name"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="price" class="form-label">Precio</label>
+        <input
+          type="number"
+          id="price"
+          v-model.number="form.price"
+          class="form-control"
+          step="0.01"
+          min="0"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <button @click="cancel" type="button" class="btn btn-secondary ms-2">
+        Cancelar
+      </button>
+    </form>
+  </div>
+</template>
+
+<script>
+import axios from 'axios'
+import Swal from 'sweetalert2'
+
+export default {
+  name: 'ExtraIngredientNew',
+  data() {
+    return {
+      form: {
+        name: '',
+        price: null,
+      },
+    }
+  },
+  methods: {
+    submitForm() {
+      axios
+        .post('http://127.0.0.1:8000/api/extra-ingredients', this.form)
+        .then(() => {
+          Swal.fire('Éxito', 'Extra Ingredient creado', 'success')
+          this.$router.push({ name: 'ExtraIngredients' })
+        })
+        .catch(error => {
+          Swal.fire(
+            'Error',
+            error.response?.data?.message || 'Error al crear',
+            'error'
+          )
+        })
+    },
+    cancel() {
+      this.$router.push({ name: 'ExtraIngredients' })
+    },
+  },
+}
+</script>

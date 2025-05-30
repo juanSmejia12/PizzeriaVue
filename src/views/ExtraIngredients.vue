@@ -20,7 +20,14 @@
         <tr v-for="(extra, index) in extras" :key="extra.id">
           <th scope="row">{{ index + 1 }}</th>
           <td>{{ extra.name }}</td>
-          <td>${{ extra.price.toFixed(2) }}</td>
+          <td>${{ Number(extra.price).toFixed(2) }}</td>
+          <td>
+            {{
+                isNaN(Number(extra.price))
+                ? 'Precio inválido'
+                : '$' + Number(extra.price).toFixed(2)
+            }}
+          </td>
           <td>
             <button @click="editExtra(extra.id)" class="btn btn-warning mx-2">
               <font-awesome-icon icon="pencil" />
@@ -51,10 +58,10 @@ export default {
   },
   methods: {
     newExtra() {
-      this.$router.push({ name: 'ExtraIngredientsNew' })
+      this.$router.push({ name: 'ExtraIngredientNew' })
     },
     editExtra(id) {
-      this.$router.push({ name: 'ExtraIngredientsEdit', params: { id } })
+      this.$router.push({ name: 'ExtraIngredientEdit', params: { id } })
     },
     deleteExtra(id) {
       Swal.fire({
@@ -65,7 +72,7 @@ export default {
         icon: 'warning'
       }).then((result) => {
         if (result.isConfirmed) {
-          axios.delete(`http://127.0.0.1:8000/api/extra_ingredients/${id}`)
+          axios.delete(`http://127.0.0.1:8000/api/extra-ingredients/${id}`)
             .then(() => {
               Swal.fire('¡Eliminado!', '', 'success')
               this.loadExtras()
@@ -77,13 +84,17 @@ export default {
       })
     },
     loadExtras() {
-      axios.get('http://127.0.0.1:8000/api/extra_ingredients')
-        .then(response => {
-          this.extras = response.data
-        })
-        .catch(() => {
-          Swal.fire('Error', 'No se pudo cargar la lista.', 'error')
-        })
+      axios.get('http://127.0.0.1:8000/api/extra-ingredients')
+    .then(response => {
+      console.log('Extras cargados:', response.data) 
+      this.extras = response.data.map(extra => ({
+        ...extra,
+        price: Number(extra.price)
+      }))
+    })
+    .catch(() => {
+      Swal.fire('Error', 'No se pudo cargar la lista.', 'error')
+    })
     }
   },
   mounted() {
