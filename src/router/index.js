@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-
+import ClientNew from '@/components/Client/ClientNew.vue'
+import ClientEdit from '@/components/Client/ClientEdit.vue'
 import HomeView from '../views/HomeView.vue'
 import Clients from '@/views/Clients.vue'
 import Purchases from '../views/Purchases.vue'
@@ -37,6 +38,17 @@ const routes = [
     path: '/clients',
     name: 'clients',
     component: Clients
+  },
+  {
+    path: '/clients/new',
+    name: 'ClientNew',
+    component: ClientNew
+  },
+  {
+    path: '/clients/edit/:id',
+    name: 'ClientEdit',
+    component: ClientEdit,
+    props: true
   },
   {
     path: '/purchases',
@@ -147,6 +159,11 @@ const routes = [
   name: 'Users',
   component: Users
   },
+  {
+  path: '/users/new',
+  name: 'UsersNew',
+  component: UsersNew
+},
   {
   path: '/users/new',
   name: 'UsersNew',

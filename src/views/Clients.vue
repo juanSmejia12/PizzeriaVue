@@ -1,26 +1,37 @@
 <template>
-  <div class="container mt-5">
-    <h2 class="mb-4">Lista de Clientes</h2>
-    <router-link to="/crear-cliente" class="btn btn-primary mb-3">Crear Cliente</router-link>
+  <div class="container">
+    <h1 class="text-start">
+      Listado de Clientes
+      <button @click="newClient" class="btn btn-success mx-2">
+        <font-awesome-icon icon="plus" />
+      </button>
+    </h1>
 
-    <table class="table table-bordered">
-      <thead class="thead-dark">
+    <table class="table table-striped">
+      <thead>
         <tr>
-          <th>ID</th>
-          <th>Dirección</th>
-          <th>Teléfono</th>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Email</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="cliente in clientes" :key="cliente.id">
-          <td>{{ cliente.id }}</td>
-          <td>{{ cliente.address }}</td>
-          <td>{{ cliente.phone }}</td>
+        <tr v-for="(client, index) in clients" :key="client.id">
+          <th scope="row">{{ index + 1 }}</th>
+          <td>{{ client.user?.name }}</td>
+          <td>{{ client.user?.email }}</td>
           <td>
-            <button class="btn btn-danger me-2" @click="eliminarCliente(cliente.id)">Eliminar</button>
-            <router-link :to="`/editar-cliente/${cliente.id}`" class="btn btn-warning">Editar</router-link>
+            <button @click="editClient(client.id)" class="btn btn-warning mx-1">
+              <font-awesome-icon icon="pencil" />
+            </button>
+            <button @click="deleteClient(client.id)" class="btn btn-danger mx-1">
+              <font-awesome-icon icon="trash" />
+            </button>
           </td>
+        </tr>
+        <tr v-if="clients.length === 0">
+          <td colspan="4" class="text-center">No hay clientes registrados.</td>
         </tr>
       </tbody>
     </table>
@@ -29,43 +40,63 @@
 
 <script>
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
-  name: 'Clientes',
+  name: 'Clients',
   data() {
     return {
-      clientes: []
+      clients: []
     }
   },
   methods: {
-    async cargarClientes() {
-      try {
-        const response = await axios.get('http://localhost:8000/api/clients')
-        this.clientes = response.data
-      } catch (error) {
-        console.error('Error al cargar los clientes:', error)
-      }
+    newClient() {
+      this.$router.push({ name: 'ClientNew' })
     },
-    async eliminarCliente(id) {
-      if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
-        try {
-          await axios.delete(`http://localhost:8000/api/clients/${id}`)
-          this.cargarClientes() // Recargar la lista después de eliminar
-        } catch (error) {
-          console.error('Error al eliminar cliente:', error)
+    editClient(id) {
+      this.$router.push({ name: 'ClientEdit', params: { id } })
+    },
+    deleteClient(id) {
+      Swal.fire({
+        title: `¿Desea eliminar el cliente con ID ${id}?`,
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
+        icon: 'warning'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.delete(`http://127.0.0.1:8000/api/clients/${id}`)
+            .then(response => {
+              if (response.data.success) {
+                Swal.fire('¡Eliminado!', '', 'success')
+                this.clients = this.clients.filter(c => c.id !== id)
+              } else {
+                Swal.fire('Error', 'No se pudo eliminar el cliente.', 'error')
+              }
+            })
+            .catch(() => {
+              Swal.fire('Error', 'No se pudo eliminar el cliente.', 'error')
+            })
         }
-      }
+      })
     }
   },
   mounted() {
-    this.cargarClientes()
+    axios.get('http://127.0.0.1:8000/api/clients')
+      .then(response => {
+        console.log('Datos clientes:', response.data)
+
+        if (Array.isArray(response.data)) {
+          this.clients = response.data
+        } else if (Array.isArray(response.data.clients)) {
+          this.clients = response.data.clients
+        } else {
+          this.clients = []
+        }
+      })
+      .catch(() => {
+        Swal.fire('Error', 'No se pudo cargar la lista de clientes.', 'error')
+      })
   }
 }
 </script>
-
-<style scoped>
-.table th,
-.table td {
-  vertical-align: middle;
-}
-</style>
