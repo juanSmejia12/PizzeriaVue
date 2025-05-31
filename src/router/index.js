@@ -22,6 +22,10 @@ import EditPizzaIngredient from '@/components/PizzaIngredient/EditPizzaIngredien
 import ExtraIngredients from '@/views/ExtraIngredients.vue'
 import ExtraIngredientNew from '@/components/ExtraIngredient/ExtraIngredientNew.vue'
 import ExtraIngredientEdit from '@/components/ExtraIngredient/ExtraIngredientEdit.vue'
+import Users from '@/views/Users.vue'
+import UsersNew from '@/components/User/UsersNew.vue'
+import UsersEdit from '@/components/User/UsersEdit.vue'
+
 
 const routes = [
   {
@@ -138,6 +142,22 @@ const routes = [
     component: ExtraIngredientEdit,
     props: true
   },
+  {
+  path: '/users',
+  name: 'Users',
+  component: Users
+  },
+  {
+  path: '/users/new',
+  name: 'UsersNew',
+  component: UsersNew
+},
+{
+  path: '/users/edit/:id',
+  name: 'UsersEdit',
+  component: UsersEdit,
+  props: true
+},
   {
     path: '/about',
     name: 'about',
