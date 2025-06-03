@@ -2,11 +2,16 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
-    <router-link to="/clients">Clients</router-link> |
-    <router-link to="/purchases">Purchases</router-link> |
-    <router-link to="/suppliers">Suppliers</router-link> |
-    <router-link to="/employees">Employees</router-link> |
-    <router-link to="/raw_materials">Raw Materials</router-link>
+    <router-link to="/branches">Sucursales</router-link> |
+    <router-link to="/clients">Clientes</router-link> |
+    <router-link to="/employees">Empleados</router-link> |
+    <router-link to="/extra-ingredients">Ingredientes Extras</router-link> |
+    <router-link to="/ingredients">Ingredientes</router-link> |
+    <router-link to="/pizza-ingredients">Ingredientes de Pizza</router-link> |
+    <router-link to="/pizzas">Pizzas</router-link> |
+    <router-link to="/purchases">Compras</router-link> |
+    <router-link to="/suppliers">Proveedores</router-link> |
+    <router-link to="/users">Usuarios</router-link>
   </nav>
   <router-view/>
 </template>
